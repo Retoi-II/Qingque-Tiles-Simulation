@@ -1,0 +1,120 @@
+{% block bottomJS %}
+
+    let iterationCount = 1;
+
+    function createTableForIteration(iterationNumber) {
+        const container = document.getElementById("iterations-container");
+
+        const iterationLabel = document.createElement("div");
+        iterationLabel.className = "iteration-label";
+        iterationLabel.innerText = `Iterasi: ${iterationNumber}`;
+        container.appendChild(iterationLabel);
+
+        const table = document.createElement("table");
+        table.id = `simulationTable-${iterationNumber}`;
+        table.innerHTML = `
+            <thead>
+                <tr>
+                    <th>Tile 1</th>
+                    <th>Tile 2</th>
+                    <th>Tile 3</th>
+                    <th>Tile 4</th>
+                    <th>Submit</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><select id="tile1-0-${iterationNumber}" onchange="handleChange(0, 1, ${iterationNumber})">
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="Ultimate">Ultimate</option>
+                    </select></td>
+                    <td><select id="tile2-0-${iterationNumber}" onchange="handleChange(0, 2, ${iterationNumber})">
+                        <option value=""></option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="Ultimate">Ultimate</option>
+                    </select></td>
+                    <td><select id="tile3-0-${iterationNumber}" onchange="handleChange(0, 3, ${iterationNumber})">
+                        <option value=""></option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="Ultimate">Ultimate</option>
+                    </select></td>
+                    <td><select id="tile4-0-${iterationNumber}" onchange="handleChange(0, 4, ${iterationNumber})">
+                        <option value=""></option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="Ultimate">Ultimate</option>
+                    </select></td>
+                    <td><button onclick="handleSubmit(0, ${iterationNumber})">Submit</button></td>
+                </tr>
+            </tbody>
+        `;
+        container.appendChild(table);
+    }
+
+    function handleSubmit(row, iterationNumber) {
+        const tile1 = document.getElementById(`tile1-${row}-${iterationNumber}`).value;
+        const tile2 = document.getElementById(`tile2-${row}-${iterationNumber}`).value;
+        const tile3 = document.getElementById(`tile3-${row}-${iterationNumber}`).value;
+        const tile4 = document.getElementById(`tile4-${row}-${iterationNumber}`).value;
+
+        if (tile1 === tile2 && tile2 === tile3 && tile3 === tile4 && tile1 !== "") {
+            lockTable(row, iterationNumber);
+            addNewIteration();
+        } else {
+            addNewRow(row, [tile1, tile2, tile3, tile4], iterationNumber);
+        }
+    }
+
+    function addNewRow(row, values, iterationNumber) {
+        const table = document.getElementById(`simulationTable-${iterationNumber}`).getElementsByTagName('tbody')[0];
+        const newRow = table.insertRow();
+        for (let i = 1; i <= 4; i++) {
+            const cell = newRow.insertCell(i - 1);
+            cell.innerHTML = `<select id="tile${i}-${row + 1}-${iterationNumber}" onchange="handleChange(${row + 1}, ${i}, ${iterationNumber})">
+                                <option value=""></option>
+                                ${values[i - 1] ? `<option value="${values[i - 1]}">${values[i - 1]}</option>` : ''}
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                                <option value="Ultimate">Ultimate</option>
+                              </select>`;
+            if (values[i - 1]) {
+                document.getElementById(`tile${i}-${row + 1}-${iterationNumber}`).value = values[i - 1];
+            }
+        }
+        const cell = newRow.insertCell(4);
+        cell.innerHTML = `<button onclick="handleSubmit(${row + 1}, ${iterationNumber})">Submit</button>`;
+    }
+
+    function lockTable(row, iterationNumber) {
+        const table = document.getElementById(`simulationTable-${iterationNumber}`);
+        for (let i = 0; i < table.rows[row + 1].cells.length; i++) {
+            table.rows[row + 1].cells[i].classList.add("locked");
+            const selectElement = table.rows[row + 1].cells[i].getElementsByTagName('select')[0];
+            if (selectElement) {
+                selectElement.disabled = true;
+            }
+        }
+    }
+
+    function addNewIteration() {
+        iterationCount++;
+        createTableForIteration(iterationCount);
+    }
+
+    function handleChange(row, col, iterationNumber) {
+        // Implementasi untuk logika ketika nilai dropdown berubah (jika diperlukan).
+    }
+
+    // Inisialisasi iterasi pertama saat halaman dimuat
+    createTableForIteration(iterationCount);
+
+
+{% endblock %}

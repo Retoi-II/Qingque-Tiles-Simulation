@@ -1,0 +1,306 @@
+{% block bottomJS %}
+
+let iterationCount = 1;
+
+function createTableForIteration(iterationNumber) {
+    const container = document.getElementById("iterations-container");
+
+    const iterationLabel = document.createElement("div");
+    iterationLabel.className = "iteration-label";
+    iterationLabel.innerText = `Iteration ${iterationNumber}`;
+    container.appendChild(iterationLabel);
+
+    const table = document.createElement("table");
+    table.id = `simulationTable-${iterationNumber}`;
+    table.innerHTML = `
+            <thead class="table">
+                <tr>
+                    <th scope="col" class="col-2-75">1</th>
+                    <th scope="col" class="col-2-75">2</th>
+                    <th scope="col" class="col-2-75">3</th>
+                    <th scope="col" class="col-2-75">4</th>
+                    <th scope="col" class="col-1"><i class="fa-sharp fa-solid fa-plus"></i></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>${createTileOptions(0, 1, iterationNumber)}</td>
+                    <td>${createTileOptions(0, 2, iterationNumber)}</td>
+                    <td>${createTileOptions(0, 3, iterationNumber)}</td>
+                    <td>${createTileOptions(0, 4, iterationNumber)}</td>
+                    <td><button class="adjust-btn btn btn-success fa-sharp fa-solid fa-plus" onclick="handleSubmit(0, ${iterationNumber})"></button></td>
+                </tr>
+            </tbody>
+        `;
+    container.appendChild(table);
+}
+
+function createTileOptions(row, col, iterationNumber) {
+    const defaultImg = "{{ url_for('static', filename='img/tiles/dropdown.png') }}";
+    return `
+            <div class="tile-option" id="tile-${row}-${col}-${iterationNumber}">
+                <div class="tile-selected">
+                    <img src="${defaultImg}" alt="v" id="tile-selected-${row}-${col}-${iterationNumber}" onclick="toggleDropdown(${row}, ${col}, ${iterationNumber})">
+                </div>
+                <div class="tile-dropdown-content" id="dropdown-${row}-${col}-${iterationNumber}">
+                    <img src="{{ url_for('static', filename='img/tiles/A.jpg') }}" alt="A" onclick="selectTile(${row}, ${col}, 'A', '{{ url_for('static', filename='img/tiles/A.jpg') }}', ${iterationNumber})">
+                    <img src="{{ url_for('static', filename='img/tiles/B.png') }}" alt="B" onclick="selectTile(${row}, ${col}, 'B', '{{ url_for('static', filename='img/tiles/B.png') }}', ${iterationNumber})">
+                    <img src="{{ url_for('static', filename='img/tiles/C.png') }}" alt="C" onclick="selectTile(${row}, ${col}, 'C', '{{ url_for('static', filename='img/tiles/C.png') }}', ${iterationNumber})">
+                    <img src="{{ url_for('static', filename='img/tiles/S.png') }}" alt="Ultimate" onclick="selectTile(${row}, ${col}, 'Ultimate', '{{ url_for('static', filename='img/tiles/S.png') }}', ${iterationNumber})">
+                    ${
+                        col > 1
+                            ? `<img src="{{ url_for('static', filename='img/tiles/X.png') }}" alt="Kosong" onclick="selectTile(${row}, ${col}, 'Kosong', '{{ url_for('static', filename='img/tiles/X.png') }}', ${iterationNumber})">`
+                            : ""
+                    }
+                </div>
+                <input type="hidden" id="tile-input-${row}-${col}-${iterationNumber}" value="">
+            </div>
+        `;
+}
+
+function selectTile(row, col, value, imgSrc, iterationNumber) {
+    const inputElement = document.getElementById(
+        `tile-input-${row}-${col}-${iterationNumber}`
+    );
+    const selectedElement = document.getElementById(
+        `tile-selected-${row}-${col}-${iterationNumber}`
+    );
+
+    inputElement.value = value; // Set the selected value
+    selectedElement.src = imgSrc; // Change the displayed image
+
+    toggleDropdown(row, col, iterationNumber, true); // Close the dropdown after selection
+}
+
+function toggleDropdown(row, col, iterationNumber, forceClose = false) {
+    const dropdown = document.getElementById(
+        `dropdown-${row}-${col}-${iterationNumber}`
+    );
+    dropdown.style.display = forceClose
+        ? "none"
+        : dropdown.style.display === "block"
+        ? "none"
+        : "block";
+}
+
+function handleSubmit(row, iterationNumber) {
+    const tile1 = document.getElementById(
+        `tile-input-${row}-1-${iterationNumber}`
+    ).value;
+    const tile2 = document.getElementById(
+        `tile-input-${row}-2-${iterationNumber}`
+    ).value;
+    const tile3 = document.getElementById(
+        `tile-input-${row}-3-${iterationNumber}`
+    ).value;
+    const tile4 = document.getElementById(
+        `tile-input-${row}-4-${iterationNumber}`
+    ).value;
+
+    if (tile1 === tile2 && tile2 === tile3 && tile3 === tile4 && tile1 !== "") {
+        lockTable(row, iterationNumber);
+        addNewIteration();
+    } else {
+        addNewRow(row, [tile1, tile2, tile3, tile4], iterationNumber);
+    }
+}
+
+function addNewRow(row, values, iterationNumber) {
+    const table = document
+        .getElementById(`simulationTable-${iterationNumber}`)
+        .getElementsByTagName("tbody")[0];
+    const newRow = table.insertRow();
+    for (let i = 1; i <= 4; i++) {
+        const cell = newRow.insertCell(i - 1);
+        cell.innerHTML = createTileOptions(row + 1, i, iterationNumber);
+        if (values[i - 1]) {
+            const imgSrc = getImageSource(values[i - 1]);
+            selectTile(row + 1, i, values[i - 1], imgSrc, iterationNumber);
+        }
+    }
+    const cell = newRow.insertCell(4);
+    cell.innerHTML = `<button  class="adjust-btn btn btn-success fa-sharp fa-solid fa-plus" onclick="handleSubmit(${row + 1}, ${iterationNumber})"></button>`;
+}
+
+function lockTable(row, iterationNumber) {
+    const table = document.getElementById(`simulationTable-${iterationNumber}`);
+    for (let i = 0; i < table.rows[row + 1].cells.length; i++) {
+        table.rows[row + 1].cells[i].classList.add("locked");
+    }
+}
+
+function addNewIteration() {
+    iterationCount++;
+    createTableForIteration(iterationCount);
+}
+
+// Inisialisasi iterasi pertama saat halaman dimuat
+createTableForIteration(iterationCount);
+
+function getTableDataAsJson(iterationNumber) {
+    const table = document.getElementById(`simulationTable-${iterationNumber}`);
+    const rows = table.getElementsByTagName("tbody")[0].rows;
+    let tableData = [];
+
+    for (let i = 0; i < rows.length; i++) {
+        let rowData = {};
+        rowData["Tile 1"] = document.getElementById(`tile-input-${i}-1-${iterationNumber}`).value;
+        rowData["Tile 2"] = document.getElementById(`tile-input-${i}-2-${iterationNumber}`).value;
+        rowData["Tile 3"] = document.getElementById(`tile-input-${i}-3-${iterationNumber}`).value;
+        rowData["Tile 4"] = document.getElementById(`tile-input-${i}-4-${iterationNumber}`).value;
+        tableData.push(rowData);
+    }
+
+    return JSON.stringify(tableData, null, 2); // Mengubah data menjadi JSON yang rapi
+}
+
+function validationMsgA(message, isValid) {
+    const validationMessageDiv = document.getElementById('validationMessage');
+    
+    if (isValid) {
+        validationMessageDiv.className = "valid-feedback";
+    } else {
+        validationMessageDiv.className = "invalid-feedback";
+    }
+
+    validationMessageDiv.innerHTML = message;
+    validationMessageDiv.style.display = "block";
+}
+
+function validationMsgB(message, isValid) {
+    const validationMessageDiv = document.getElementById('validationMessageB');
+    
+    if (isValid) {
+        validationMessageDiv.className = "valid-feedback";
+    } else {
+        validationMessageDiv.className = "invalid-feedback";
+    }
+
+    validationMessageDiv.innerHTML = message;
+    validationMessageDiv.style.display = "block";
+}
+
+function hideValidationMessage() {
+    const validationMessageDiv = document.getElementById('validationMessage');
+    validationMessageDiv.style.display = "none";
+}
+
+
+function loadJsonFile() {
+    const input = document.getElementById('jsonFileInput');
+    
+    const file = input.files[0];
+
+    if (!file) {
+        validationMsgA("Please select a JSON file first!", false); // false untuk invalid
+        return;
+    } else {
+        hideValidationMessage();
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function(event) {
+        const jsonData = event.target.result;
+        try {
+            const parsedData = JSON.parse(jsonData);
+            populateTableFromJson(parsedData);
+            validationMsgA(`Data from <b>${file.name}</b> loaded.`, true); // true untuk valid
+        } catch (error) {
+            validationMsgA("Invalid JSON file.", false); // false untuk invalid
+        }
+    };
+
+    reader.readAsText(file);
+}
+
+function populateTableFromJson(jsonData) {
+
+    if (jsonData["Game Version"]) {
+        document.getElementById("gameVersion").value = jsonData["Game Version"];
+    }
+
+    // Reset the container if needed
+    const container = document.getElementById("iterations-container");
+    container.innerHTML = ""; // Clear existing data
+
+    // Iterate over the JSON data and populate the tables
+    for (let iteration in jsonData) {
+        if (iteration === "Game Version") continue;
+        
+        const iterationNumber = parseInt(iteration.replace("Iteration ", ""));
+        createTableForIteration(iterationNumber);
+
+        const rows = jsonData[iteration];
+        rows.forEach((row, rowIndex) => {
+            if (rowIndex > 0) {
+                addNewRow(rowIndex - 1, [row["Tile 1"], row["Tile 2"], row["Tile 3"], row["Tile 4"]], iterationNumber);
+            } else {
+                // Fill the first row directly
+                for (let i = 1; i <= 4; i++) {
+                    const imgSrc = getImageSource(row[`Tile ${i}`]);
+                    selectTile(0, i, row[`Tile ${i}`], imgSrc, iterationNumber);
+                }
+            }
+        });
+    }
+
+    // Update iteration count
+    iterationCount = Object.keys(jsonData).length;
+}
+
+function getImageSource(tileType) {
+    switch (tileType) {
+        case 'A':
+            return "{{ url_for('static', filename='img/tiles/A.jpg') }}";
+        case 'B':
+            return "{{ url_for('static', filename='img/tiles/B.png') }}";
+        case 'C':
+            return "{{ url_for('static', filename='img/tiles/C.png') }}";
+        case 'Ultimate':
+            return "{{ url_for('static', filename='img/tiles/S.png') }}";
+        case 'Kosong':
+            return "{{ url_for('static', filename='img/tiles/X.png') }}";
+        default:
+            return "static/img/tiles/dropdown.png"; // Default image if nothing matches
+    }
+}
+
+function downloadJsonFile(jsonData, filename) {
+    const blob = new Blob([jsonData], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+function saveAllTablesAsJson() {
+    let allData = {};
+    const gameVersion = document.getElementById("gameVersion").value;
+
+    if (!gameVersion) {
+        validationMsgB("Please enter the game version!", false); // Tampilkan pesan validasi jika kosong
+        return;
+    }
+
+    // Simpan versi game di dalam JSON
+    allData["Game Version"] = gameVersion;
+
+    // Simpan data dari setiap iterasi
+    for (let i = 1; i <= iterationCount; i++) {
+        const iterationData = getTableDataAsJson(i);
+        allData[`Iteration ${i}`] = JSON.parse(iterationData);
+    }
+
+    const jsonData = JSON.stringify(allData, null, 2);
+    downloadJsonFile(jsonData, "simulation_data.json");
+    return jsonData;
+}
+
+localStorage.setItem('simulationData', jsonData);
+
+{% endblock %}

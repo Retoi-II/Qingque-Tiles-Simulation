@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Default Title{% endblock %}</title>
+
+    {% block headCss %}{% endblock %}
+    {% block addCss %}{% endblock %}
+    <style> {% block style %}{% endblock %} </style>
+
+</head>
+
+<body>
+    <header class="navbar bg-transparent text-dark border-bottom mb-4 d-flex flex-wrap justify-content-end py-3 border-bottom">
+        {% block header %}Default Header{% endblock %}
+    </header>
+
+    <div class="overlay" id="overlay">
+        <div class="overlay-content">
+            <nav class="overlay-menu text-center">
+                <ul class="nav nav-pills list-group">
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Services</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+   
+
+    <main class="container-xxl">
+        <div class="row col-12">
+            <div id="" class="col-lg-3">
+                <ul id="file-list" class="list-group">
+                    
+                </ul>                
+            </div>
+
+            <div id="" class="col-lg-6 col-12">
+                {% block content %}Default Content{% endblock %}
+                <div id="file-content"></div>
+            </div>
+
+            <div id="" class="col-lg-3 text-center">
+                <div>Default Sidebar</div>
+            </div>
+            
+        </div>
+    </main>
+
+
+    <footer>
+        {% block footer %}Default Footer{% endblock %}
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+    <script>
+        {% block bottomJS %}{% endblock %}
+    </script>
+
+    <script src="{{ url_for('static', filename='js/hamburger.js') }}"></script>
+</body>
+
+</html>

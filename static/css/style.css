@@ -1,0 +1,210 @@
+#simulation {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.iteration {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 10px;
+}
+
+.tile {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+select {
+    width: 100%;
+    padding: 5px;
+}
+
+.adjust-btn {
+    --bs-btn-padding-x: 0.4rem !important;
+    --bs-btn-padding-y: 0.4rem !important;
+    --bs-btn-font-size: 0.65rem !important;
+}
+
+.overlay-menu {
+	margin-top: 60%;
+	margin-bottom: 50%;
+}
+
+/* General Styling */
+body, html {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+header.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #333;
+    color: white;
+    position: relative;
+    z-index: 1000;
+}
+
+.navbar-brand {
+    font-size: 1.5em;
+    text-align: center;
+    flex: 3;
+}
+
+.navbar-menu {
+    display: flex;
+    flex: 9;
+    justify-content: flex-end;
+}
+
+.nav-pills {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.nav-pills li {
+    margin: 0;
+}
+
+/* Toggle button for mobile */
+.navbar-toggle {
+    display: none;
+}
+
+.menu-checkbox {
+    display: none;
+}
+
+.menu-label {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 25px;
+    height: 18px;
+    cursor: pointer;
+    margin-right: 10px;
+    z-index: 1001; /* Ensure toggle is above the overlay */
+}
+
+.menu-icon {
+    height: 3px;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+.menu-checkbox:checked + .menu-label .menu-icon:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.menu-checkbox:checked + .menu-label .menu-icon:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-checkbox:checked + .menu-label .menu-icon:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Overlay menu styling */
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 999;
+}
+
+.overlay-content {
+    background-color: #fff;
+    color: #333;
+    width: 75%;
+    height: 100%;
+    position: absolute;
+    bottom: 0;
+    padding: 20px;
+    transition: transform 0.3s ease;
+    transform: translateY(100%);
+}
+
+.menu-checkbox:checked ~ .overlay {
+    opacity: 1;
+    visibility: visible;
+}
+
+.menu-checkbox:checked ~ .overlay .overlay-content {
+    transform: translateY(0);
+}
+
+.overlay-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.overlay-brand {
+    font-size: 1.5em;
+}
+
+.overlay-close {
+    font-size: 2em;
+    cursor: pointer;
+}
+
+/* Desktop View */
+@media(min-width: 768px) {
+    .navbar-toggle {
+        display: none;
+    }
+    .navbar-menu {
+        display: flex;
+    }
+    .overlay {
+        display: none;
+    }
+}
+
+/* Mobile View */
+@media(max-width: 767px) {
+    .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+    }
+    .navbar-menu {
+        display: none;
+    }
+    .navbar-brand {
+        order: 2;
+        text-align: center;
+    }
+    .navbar-toggle { 
+        display: block;
+        order: 1;
+    }
+}
+
+/* Navbar hover transition effect */
+.nav-pills li a {
+    transition: background-color 0.5s ease;
+}

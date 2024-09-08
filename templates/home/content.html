@@ -1,0 +1,27 @@
+<div class="row mt-2">
+    <div class="col-9 px-1">
+        <input class="form-control" type="file" id="jsonFileInput" accept=".json">
+        <div id="validationMessage"></div>
+    </div>
+    <div class="col-3 px-1">
+        <button class="btn btn-primary" onclick="loadJsonFile()">Load JSON</button>
+    </div>
+</div>
+
+<div class="row mt-2">
+    <div class="col-auto px-1">
+        <span class="badge text-bg-primary align-middle" for="gameVersion">Game Version:</span>
+    </div>
+    <div class="col-auto px-1">
+        <input class="form-control form-control-sm" type="text" id="gameVersion" placeholder="Enter game version" required>
+        <div id="validationMessageB"></div>
+    </div>
+</div>
+
+<div id="iterations-container"></div>
+
+<div class="row">
+    <div class="col-12 text-end" style="margin-bottom: 185px;">
+        <button class="btn btn-success" onclick="saveAllTablesAsJson()">Save as JSON</button>
+    </div>
+</div>

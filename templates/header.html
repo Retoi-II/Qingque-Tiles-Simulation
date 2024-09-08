@@ -1,0 +1,20 @@
+{% block header %}
+
+<nav class="navbar-menu">
+    <ul class="nav nav-pills">
+        <li class="nav-item"><a class="nav-link px-2" href="{{ url_for('home') }}">Home</a></li>
+        <li class="nav-item"><a class="nav-link px-2" href="{{ url_for('about') }}">About</a></li>
+        <li class="nav-item"><a class="nav-link px-2" href="{{ url_for('home') }}">Services</a></li>
+        <li class="nav-item"><a class="nav-link px-2" href="{{ url_for('home') }}">Contact</a></li>
+    </ul>
+</nav>
+<div class="navbar-toggle">
+    <input type="checkbox" id="menu-toggle" class="menu-checkbox">
+    <label for="menu-toggle" class="menu-label">
+        <span class="menu-icon bg-dark"></span>
+        <span class="menu-icon bg-dark"></span>
+        <span class="menu-icon bg-dark"></span>
+    </label>
+</div>
+
+{% endblock %}
