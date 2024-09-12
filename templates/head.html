@@ -34,9 +34,16 @@
     <main class="container-xxl">
         <div class="row col-12">
             <div id="" class="col-lg-3">
-                <ul id="file-list" class="list-group">
-                    
-                </ul>                
+                <div class="list-group">
+                    <div class="list-group-item list-group-item-action">
+                        <p class="font-weight-bold">Refresh list
+                            <a href="{{ url_for('home') }}" class="file-name">
+                                <i class="fa-solid fa-arrow-rotate-right"></i>
+                            </a>
+                        </p>
+                    </div>
+                </div>
+                <ul id="file-list" class="list-group"></ul>                
             </div>
 
             <div id="" class="col-lg-6 col-12">
@@ -45,9 +52,12 @@
             </div>
 
             <div id="" class="col-lg-3 text-center">
-                <div>Default Sidebar</div>
+                <div aria-live="polite" aria-atomic="true" class="justify-content-center align-items-center w-100">
+                    <div id="toast-container" class=""></div>
+                </div>
+                <span class="mt-5 badge text-bg-info">Notification appears here</span>
             </div>
-            
+
         </div>
     </main>
 

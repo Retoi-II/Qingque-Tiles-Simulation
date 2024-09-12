@@ -139,20 +139,39 @@ createTableForIteration(iterationCount);
 
 function getTableDataAsJson(iterationNumber) {
     const table = document.getElementById(`simulationTable-${iterationNumber}`);
+    
+    if (!table) {
+        console.error(`Table with ID simulationTable-${iterationNumber} not found.`);
+        return null;
+    }
+
     const rows = table.getElementsByTagName("tbody")[0].rows;
     let tableData = [];
 
     for (let i = 0; i < rows.length; i++) {
-        let rowData = {};
-        rowData["Tile 1"] = document.getElementById(`tile-input-${i}-1-${iterationNumber}`).value;
-        rowData["Tile 2"] = document.getElementById(`tile-input-${i}-2-${iterationNumber}`).value;
-        rowData["Tile 3"] = document.getElementById(`tile-input-${i}-3-${iterationNumber}`).value;
-        rowData["Tile 4"] = document.getElementById(`tile-input-${i}-4-${iterationNumber}`).value;
+        let rowData = {
+            "Tile 1": document.getElementById(`tile-input-${i}-1-${iterationNumber}`).value,
+            "Tile 2": document.getElementById(`tile-input-${i}-2-${iterationNumber}`).value,
+            "Tile 3": document.getElementById(`tile-input-${i}-3-${iterationNumber}`).value,
+            "Tile 4": document.getElementById(`tile-input-${i}-4-${iterationNumber}`).value,
+        };
+
+        // Cek apakah semua nilai kosong
+        if (rowData["Tile 1"] === "" && rowData["Tile 2"] === "" && rowData["Tile 3"] === "" && rowData["Tile 4"] === "") {
+            continue; // Jika semua kolom kosong, lewati baris ini
+        }
+
         tableData.push(rowData);
+    }
+
+    // Jika semua baris kosong, return null
+    if (tableData.length === 0) {
+        return null;
     }
 
     return JSON.stringify(tableData, null, 2); // Mengubah data menjadi JSON yang rapi
 }
+
 
 function validationMsgA(message, isValid) {
     const validationMessageDiv = document.getElementById('validationMessage');
@@ -215,7 +234,6 @@ function loadJsonFile() {
 }
 
 function populateTableFromJson(jsonData) {
-
     if (jsonData["Game Version"]) {
         document.getElementById("gameVersion").value = jsonData["Game Version"];
     }
@@ -227,26 +245,47 @@ function populateTableFromJson(jsonData) {
     // Iterate over the JSON data and populate the tables
     for (let iteration in jsonData) {
         if (iteration === "Game Version") continue;
-        
+
         const iterationNumber = parseInt(iteration.replace("Iteration ", ""));
         createTableForIteration(iterationNumber);
 
         const rows = jsonData[iteration];
-        rows.forEach((row, rowIndex) => {
-            if (rowIndex > 0) {
-                addNewRow(rowIndex - 1, [row["Tile 1"], row["Tile 2"], row["Tile 3"], row["Tile 4"]], iterationNumber);
-            } else {
-                // Fill the first row directly
-                for (let i = 1; i <= 4; i++) {
-                    const imgSrc = getImageSource(row[`Tile ${i}`]);
-                    selectTile(0, i, row[`Tile ${i}`], imgSrc, iterationNumber);
+
+        // Jika rows tidak kosong, isi tabel dengan data
+        if (rows && rows.length > 0) {
+            rows.forEach((row, rowIndex) => {
+                if (rowIndex > 0) {
+                    // Tambahkan baris baru jika bukan baris pertama
+                    addNewRow(rowIndex - 1, [row["Tile 1"], row["Tile 2"], row["Tile 3"], row["Tile 4"]], iterationNumber);
+                } else {
+                    // Isi baris pertama secara langsung
+                    for (let i = 1; i <= 4; i++) {
+                        const imgSrc = getImageSource(row[`Tile ${i}`]);
+                        selectTile(0, i, row[`Tile ${i}`], imgSrc, iterationNumber);
+                    }
                 }
+            });
+
+            // Tambahkan class 'locked' ke semua <td> sebelum iteration-label
+            const table = document.getElementById(`simulationTable-${iterationNumber}`);
+            const lastRow = table.querySelector("tbody").lastElementChild; // Ambil baris terakhir
+
+            if (lastRow) {
+                const tdElements = lastRow.querySelectorAll('td'); // Ambil semua <td> dalam baris terakhir
+                let locked = true;
+                tdElements.forEach(td => {
+                    if (td.classList.contains('iteration-label')) {
+                        locked = false; // Jika menemukan 'iteration-label', stop menambahkan class
+                    } else if (locked) {
+                        td.classList.add('locked'); // Tambahkan class 'locked' hanya jika masih sebelum iteration-label
+                    }
+                });
             }
-        });
+        }
     }
 
-    // Update iteration count
-    iterationCount = Object.keys(jsonData).length;
+    // Update iteration count ke iterasi terakhir yang ditemukan
+    iterationCount = Object.keys(jsonData).length - 1;  // Kurangi 1 karena "Game Version" tidak dihitung sebagai iterasi
 }
 
 function getImageSource(tileType) {
@@ -293,7 +332,13 @@ function saveAllTablesAsJson() {
     // Simpan data dari setiap iterasi
     for (let i = 1; i <= iterationCount; i++) {
         const iterationData = getTableDataAsJson(i);
-        allData[`Iteration ${i}`] = JSON.parse(iterationData);
+
+        // Jika iterationData null, lewati iterasi ini
+        if (iterationData !== null) {
+            allData[`Iteration ${i}`] = JSON.parse(iterationData);
+        } else {
+            console.warn(`Skipping empty iteration ${i}.`);
+        }
     }
 
     const jsonData = JSON.stringify(allData, null, 2);

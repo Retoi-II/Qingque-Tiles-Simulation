@@ -1,4 +1,5 @@
 {
+  "Game Version": "oidhsoh934790",
   "Iteration 1": [
     {
       "Tile 1": "A",
@@ -44,6 +45,32 @@
     }
   ],
   "Iteration 2": [
+    {
+      "Tile 1": "B",
+      "Tile 2": "",
+      "Tile 3": "",
+      "Tile 4": ""
+    },
+    {
+      "Tile 1": "B",
+      "Tile 2": "B",
+      "Tile 3": "",
+      "Tile 4": ""
+    },
+    {
+      "Tile 1": "B",
+      "Tile 2": "B",
+      "Tile 3": "B",
+      "Tile 4": ""
+    },
+    {
+      "Tile 1": "B",
+      "Tile 2": "B",
+      "Tile 3": "B",
+      "Tile 4": "B"
+    }
+  ],
+  "Iteration 3": [
     {
       "Tile 1": "",
       "Tile 2": "",

@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, send_from_directory, jsonify, request, abort
+from flask import Flask, render_template, send_from_directory, jsonify, request, abort, url_for
 
 app = Flask(__name__)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -63,6 +63,10 @@ def delete_file(filename):
         return abort(404)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+@app.route('/api/get_home_url')
+def get_home_url():
+    return jsonify({"home_url": url_for('home')})
 
 if __name__ == '__main__':
     app.run(debug=True)

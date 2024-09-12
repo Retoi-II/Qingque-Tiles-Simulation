@@ -1,4 +1,5 @@
 {
+  "Game Version": "AHSDA-328619",
   "Iteration 1": [
     {
       "Tile 1": "A",
@@ -52,48 +53,58 @@
     },
     {
       "Tile 1": "A",
-      "Tile 2": "B",
+      "Tile 2": "A",
       "Tile 3": "",
       "Tile 4": ""
     },
     {
-      "Tile 1": "B",
-      "Tile 2": "B",
+      "Tile 1": "A",
+      "Tile 2": "A",
       "Tile 3": "A",
       "Tile 4": ""
     },
     {
-      "Tile 1": "B",
-      "Tile 2": "B",
+      "Tile 1": "A",
+      "Tile 2": "A",
       "Tile 3": "A",
-      "Tile 4": "C"
-    },
-    {
-      "Tile 1": "C",
-      "Tile 2": "C",
-      "Tile 3": "A",
-      "Tile 4": "B"
-    },
-    {
-      "Tile 1": "C",
-      "Tile 2": "C",
-      "Tile 3": "B",
-      "Tile 4": "B"
-    },
-    {
-      "Tile 1": "C",
-      "Tile 2": "C",
-      "Tile 3": "C",
-      "Tile 4": "B"
-    },
-    {
-      "Tile 1": "C",
-      "Tile 2": "C",
-      "Tile 3": "C",
-      "Tile 4": "C"
+      "Tile 4": "A"
     }
   ],
-  "Iteration 3": [
+  "Iteration 4": [
+    {
+      "Tile 1": "Ultimate",
+      "Tile 2": "Ultimate",
+      "Tile 3": "Ultimate",
+      "Tile 4": "Ultimate"
+    }
+  ],
+  "Iteration 5": [
+    {
+      "Tile 1": "A",
+      "Tile 2": "",
+      "Tile 3": "",
+      "Tile 4": ""
+    },
+    {
+      "Tile 1": "A",
+      "Tile 2": "A",
+      "Tile 3": "",
+      "Tile 4": ""
+    },
+    {
+      "Tile 1": "A",
+      "Tile 2": "A",
+      "Tile 3": "A",
+      "Tile 4": ""
+    },
+    {
+      "Tile 1": "A",
+      "Tile 2": "A",
+      "Tile 3": "A",
+      "Tile 4": "A"
+    }
+  ],
+  "Iteration 6": [
     {
       "Tile 1": "",
       "Tile 2": "",
